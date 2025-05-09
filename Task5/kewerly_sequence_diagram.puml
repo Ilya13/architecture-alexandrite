@@ -6,12 +6,17 @@ collections "Cache" as Cache
 database "MES db" as MES_DB
 
 Operator -> MES_API: Get orders
-MES_API <-- Cache: Return orders or null
+MES_API <-- Cache: Return orders
 alt orders is null
-    MES_API -> MES_DB: Get orders
-    MES_API <-- MES_DB: Return orders
-    MES_API -> Cache: Cache orders
+    Cache -> MES_DB: Get orders
+    Cache <-- MES_DB: Return orders
 end
 
 Operator <-- MES_API: Return orders
+
+Operator -> MES_API: Take order
+MES_API -> Cache: Update order
+Cache -> Cache: Save operator info
+Cache -> MES_DB: Change status
+
 @enduml
