@@ -1,0 +1,22 @@
+@startuml
+
+actor Operator as Operator
+participant "MES API" as MES_API
+collections "Cache" as Cache
+database "MES db" as MES_DB
+
+Operator -> MES_API: Get orders
+MES_API <-- Cache: Return orders
+alt orders is null
+    Cache -> MES_DB: Get orders
+    Cache <-- MES_DB: Return orders
+end
+
+Operator <-- MES_API: Return orders
+
+Operator -> MES_API: Take order
+MES_API -> Cache: Update order
+Cache -> Cache: Save operator info
+Cache -> MES_DB: Change status
+
+@enduml
